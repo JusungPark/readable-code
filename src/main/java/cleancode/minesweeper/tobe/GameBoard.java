@@ -1,15 +1,16 @@
 package cleancode.minesweeper.tobe;
 
 import cleancode.minesweeper.tobe.cell.Cell;
+import cleancode.minesweeper.tobe.cell.Cells;
 import cleancode.minesweeper.tobe.cell.EmptyCell;
 import cleancode.minesweeper.tobe.cell.LandMineCell;
 import cleancode.minesweeper.tobe.cell.NumberCell;
 import cleancode.minesweeper.tobe.game.GameInitializable;
 import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -29,32 +30,44 @@ public class GameBoard implements GameInitializable<Integer> {
     @Override
     public void initialize(Integer landMineCount) {
 
-        for (int row = 0; row < boardRowSize; row++) {
-            for (int col = 0; col < boardColSize; col++) {
-                board[row][col] = new EmptyCell();
-            }
-        }
+        final CellPositions allPositions = CellPositions.from(this);
 
-        for (int i = 0; i < landMineCount; i++) {
-            int landMineRow = ThreadLocalRandom.current().nextInt(boardRowSize);
-            int landMineCol = ThreadLocalRandom.current().nextInt(boardColSize);
-            board[landMineRow][landMineCol] = new LandMineCell();
-            System.out.println("지뢰가 " + (char) ('a' + landMineCol) + (landMineRow + 1) + "에 설치되었습니다.");
-        }
+        initializeEmptyCells(allPositions);
 
-        for (int row = 0; row < boardRowSize; row++) {
-            for (int col = 0; col < boardColSize; col++) {
-                final CellPosition cellPosition = new CellPosition(row, col);
-                if (isLandMineCellAt(cellPosition)) {
-                    continue;
-                }
+        initializeLandMineCells(landMineCount, allPositions);
+
+        initializeNumberCells(allPositions);
+
+    }
+
+    private void initializeNumberCells(CellPositions allPositions) {
+        allPositions.stream()
+            .filter(Predicate.not(this::isLandMineCellAt))
+            .forEach(cellPosition -> {
                 final int nearbyLandMines = countNearbyLandMines(cellPosition);
-                if (nearbyLandMines == 0) {
-                    continue;
+                if (nearbyLandMines > 0) {
+                    this.updateCellAt(cellPosition, new NumberCell(nearbyLandMines));
                 }
-                board[row][col] = new NumberCell(nearbyLandMines);
-            }
+            });
+    }
+
+    private void initializeLandMineCells(Integer landMineCount, CellPositions allPositions) {
+        final CellPositions landMinePositions = allPositions.extractRandomPositions(landMineCount);
+
+        for (CellPosition cellPosition : landMinePositions) {
+            updateCellAt(cellPosition, new LandMineCell());
+            System.out.println("지뢰가 " + (char) ('a' + cellPosition.colIndex()) + (cellPosition.rowIndex() + 1) + "에 설치되었습니다.");
         }
+    }
+
+    private void initializeEmptyCells(CellPositions allPositions) {
+        for (CellPosition cellPosition : allPositions) {
+            updateCellAt(cellPosition, new EmptyCell());
+        }
+    }
+
+    private void updateCellAt(CellPosition cellPosition, Cell cell) {
+        board[cellPosition.rowIndex()][cellPosition.colIndex()] = cell;
     }
 
     public boolean isLandMineCellAt(CellPosition cellPosition) {
@@ -124,13 +137,15 @@ public class GameBoard implements GameInitializable<Integer> {
         return findCell(cellPosition).isOpened();
     }
 
-    public boolean isAllCellChecked() {
-        return Arrays.stream(board)
-            .flatMap(Arrays::stream)
-            .allMatch(Cell::isChecked);
-    }
-
     public boolean isInvalidCellPosition(CellPosition cellPosition) {
         return cellPosition.isRowIndexGTE(boardRowSize) || cellPosition.isColIndexGTE(boardColSize);
+    }
+
+    public Cells getCells() {
+        return new Cells(Arrays.stream(board).flatMap(Arrays::stream).toList());
+    }
+
+    public boolean isAllCellChecked() {
+        return this.getCells().isAllCellChecked();
     }
 }
