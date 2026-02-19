@@ -6,7 +6,7 @@ group = 'cleancode'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '25'
 }
 
 repositories {
@@ -15,9 +15,10 @@ repositories {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.assertj:assertj-core:3.27.7")
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+tasks.withType(JavaExec).configureEach {
+    // JVM 인자 전달
+    jvmArgs = ["-Dfile.encoding=UTF-8", "-Dsun.stdout.encoding=UTF-8", "-Dsun.stderr.encoding=UTF-8"]
 }
