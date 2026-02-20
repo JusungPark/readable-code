@@ -1,11 +1,17 @@
 package cleancode.minesweeper.tobe.io;
 
 import cleancode.minesweeper.tobe.GameBoard;
+import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.position.CellPosition;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler {
+
+    private static final String FLAG_SIGN = "⚑";
+    private static final String UNCHECKED_SIGH = "□";
+    private static final String EMPTY_SIGH = "■";
+    private static final String LAND_MINE_SIGN = "☼";
 
     @Override
     public void showGameStartComments() {
@@ -21,10 +27,22 @@ public class ConsoleOutputHandler implements OutputHandler {
         for (int row = 0; row < gameBoard.rowSize(); row++) {
             System.out.printf("%2d  ", row + 1);
             for (int col = 0; col < gameBoard.colSize(); col++) {
-                System.out.print(gameBoard.getSign(new CellPosition(row, col)) + " ");
+                CellSnapshot cellSnapshot = gameBoard.getSnapshot(new CellPosition(row, col));
+                String cellSign = decideCellSignFrom(cellSnapshot);
+                System.out.print(cellSign + " ");
             }
             System.out.println();
         }
+    }
+
+    private String decideCellSignFrom(CellSnapshot cellSnapshot) {
+        return switch (cellSnapshot.status()) {
+            case FLAG -> FLAG_SIGN;
+            case UNCHECKED -> UNCHECKED_SIGH;
+            case EMPTY -> EMPTY_SIGH;
+            case LAND_MINE -> LAND_MINE_SIGN;
+            case NUMBER -> String.valueOf(cellSnapshot.nearByLandMineCount());
+        };
     }
 
     @Override

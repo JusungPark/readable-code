@@ -5,6 +5,7 @@ import cleancode.minesweeper.tobe.gamelevel.GameLevel;
 import cleancode.minesweeper.tobe.io.InputHandler;
 import cleancode.minesweeper.tobe.io.OutputHandler;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.user.UserAction;
 
 public class Mineswepper implements GameRunnable {
 
@@ -35,7 +36,7 @@ public class Mineswepper implements GameRunnable {
 
             try {
                 CellPosition cellPosition = getCellInputFromUser();
-                String actionInput = getActionInputFromUser();
+                UserAction actionInput = getActionInputFromUser();
                 actOnCell(cellPosition, actionInput);
             } catch (GameException e) {
                 outputHandler.showExceptionMessage(e);
@@ -46,7 +47,7 @@ public class Mineswepper implements GameRunnable {
         }
     }
 
-    private void actOnCell(CellPosition cellPosition, String actionInput) {
+    private void actOnCell(CellPosition cellPosition, UserAction actionInput) {
         if (doesUserChooseToPlantFlag(actionInput)) {
             gameBoard.flagAt(cellPosition);
             checkIfGameIsOver();
@@ -72,17 +73,17 @@ public class Mineswepper implements GameRunnable {
         gameStatus = -1;
     }
 
-    private boolean doesUserChooseToOpenCell(String actionInput) {
-        return actionInput.equals("1");
+    private boolean doesUserChooseToOpenCell(UserAction actionInput) {
+        return actionInput == UserAction.OPEN;
     }
 
-    private boolean doesUserChooseToPlantFlag(String actionInput) {
-        return actionInput.equals("2");
+    private boolean doesUserChooseToPlantFlag(UserAction actionInput) {
+        return actionInput == UserAction.FLAG;
     }
 
-    private String getActionInputFromUser() {
+    private UserAction getActionInputFromUser() {
         outputHandler.printCommentForUserAction();
-        return inputHandler.getInputFromUser();
+        return inputHandler.getActionFromUser();
     }
 
     private CellPosition getCellInputFromUser() {

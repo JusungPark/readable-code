@@ -10,16 +10,16 @@ public class NumberCell implements Cell {
     }
 
     @Override
-    public String getSign() {
+    public CellSnapshot getSnapshot() {
         if (state.isOpened()) {
-            return String.valueOf(this.nearbyLandMineCount);
+            return CellSnapshot.number(nearbyLandMineCount);
         }
 
         if (state.isFlagged()) {
-            return FLAG_SIGN;
+            return CellSnapshot.flag();
         }
 
-        return UNCHECKED_SIGH;
+        return CellSnapshot.unchecked();
     }
 
     @Override

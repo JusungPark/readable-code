@@ -2,20 +2,19 @@ package cleancode.minesweeper.tobe.cell;
 
 public class EmptyCell implements Cell {
 
-    private static final String EMPTY_SIGH = "■";
     private final CellState state = CellState.initialize();
 
     @Override
-    public String getSign() {
+    public CellSnapshot getSnapshot() {
         if (state.isOpened()) {
-            return EMPTY_SIGH;
+            return CellSnapshot.empty();
         }
 
         if (state.isFlagged()) {
-            return FLAG_SIGN;
+            return CellSnapshot.flag();
         }
 
-        return UNCHECKED_SIGH;
+        return CellSnapshot.unchecked();
     }
 
     @Override
