@@ -12,6 +12,7 @@ public class GameApplication {
     static void main() {
 
         final GameConfig gameConfig = new GameConfig(
+//            new StubGameLevel(120, 120, 9),
             new VeryBeginner(),
             new ConsoleInputHandler(),
             new ConsoleOutputHandler()

@@ -11,7 +11,9 @@ import cleancode.minesweeper.tobe.minesweeper.board.position.CellPosition;
 import cleancode.minesweeper.tobe.minesweeper.board.position.CellPositions;
 import cleancode.minesweeper.tobe.minesweeper.board.position.RelativePosition;
 import cleancode.minesweeper.tobe.minesweeper.gamelevel.GameLevel;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -61,7 +63,7 @@ public class GameBoard implements GameInitializable<Integer> {
         this.checkIfGameIsOver();
     }
 
-    private void openSurroundedCells(CellPosition cellPosition) {
+    private void recursiveOpenSurroundedCells(CellPosition cellPosition) {
         if (isOpenedCell(cellPosition)) {
             return;
         }
@@ -76,7 +78,34 @@ public class GameBoard implements GameInitializable<Integer> {
         }
 
         calculateSurroundedPositions(cellPosition)
-            .forEach(this::openSurroundedCells);
+            .forEach(this::recursiveOpenSurroundedCells);
+    }
+
+    private void openSurroundedCells(CellPosition cellPosition) {
+        final Deque<CellPosition> stack = new ArrayDeque<>();
+        stack.push(cellPosition);
+        while (!stack.isEmpty()) {
+            openAndPushCellAt(stack);
+        }
+    }
+
+    private void openAndPushCellAt(Deque<CellPosition> stack) {
+        final CellPosition currentCellPosition = stack.pop();
+        if (isOpenedCell(currentCellPosition)) {
+            return;
+        }
+        if (isLandMineCellAt(currentCellPosition)) {
+            return;
+        }
+
+        openOneCellAt(currentCellPosition);
+
+        if (hasLandMineCountCell(currentCellPosition)) {
+            return;
+        }
+
+        calculateSurroundedPositions(currentCellPosition)
+            .forEach(stack::push);
     }
 
     private void openOneCellAt(CellPosition cellPosition) {
