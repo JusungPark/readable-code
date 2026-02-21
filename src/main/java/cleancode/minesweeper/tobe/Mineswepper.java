@@ -40,12 +40,28 @@ public class Mineswepper implements GameRunnable {
         outputHandler.showBoard(gameBoard);
 
         if (gameBoard.isLoseStatus()) {
-            outputHandler.showGameWinningComment();
+            outputHandler.showGameLosingComment();
         }
 
         if (gameBoard.isWinStatus()) {
-            outputHandler.showGameLosingComment();
+            outputHandler.showGameWinningComment();
         }
+    }
+
+    private CellPosition getCellInputFromUser() {
+        outputHandler.showCommentForSelectingCell();
+        final CellPosition cellPosition = inputHandler.getCellPositionFromUser();
+
+        if (gameBoard.isInvalidCellPosition(cellPosition)) {
+            throw new GameException(new IllegalArgumentException("잘못된 좌표입니다. 입력값: " + cellPosition));
+        }
+
+        return cellPosition;
+    }
+
+    private UserAction getActionInputFromUser() {
+        outputHandler.printCommentForUserAction();
+        return inputHandler.getActionFromUser();
     }
 
     private void actOnCell(CellPosition cellPosition, UserAction actionInput) {
@@ -62,27 +78,11 @@ public class Mineswepper implements GameRunnable {
         outputHandler.showCommentForWrongAction();
     }
 
-    private boolean doesUserChooseToOpenCell(UserAction actionInput) {
-        return actionInput == UserAction.OPEN;
-    }
-
     private boolean doesUserChooseToPlantFlag(UserAction actionInput) {
         return actionInput == UserAction.FLAG;
     }
 
-    private UserAction getActionInputFromUser() {
-        outputHandler.printCommentForUserAction();
-        return inputHandler.getActionFromUser();
-    }
-
-    private CellPosition getCellInputFromUser() {
-        outputHandler.showCommentForSelectingCell();
-        final CellPosition cellPosition = inputHandler.getCellPositionFromUser();
-
-        if (gameBoard.isInvalidCellPosition(cellPosition)) {
-            throw new GameException(new IllegalArgumentException("잘못된 좌표입니다. 입력값: " + cellPosition));
-        }
-
-        return cellPosition;
+    private boolean doesUserChooseToOpenCell(UserAction actionInput) {
+        return actionInput == UserAction.OPEN;
     }
 }
