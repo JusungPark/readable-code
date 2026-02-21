@@ -14,10 +14,10 @@ public class Mineswepper implements GameRunnable {
     private final OutputHandler outputHandler;
     private int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
-    public Mineswepper(GameLevel gameLevel, InputHandler inputHandler, OutputHandler outputHandler) {
-        this.gameBoard = new GameBoard(gameLevel);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+    public Mineswepper(GameConfig gameConfig) {
+        this.gameBoard = new GameBoard(gameConfig.gameLevel());
+        this.inputHandler = gameConfig.inputHandler();
+        this.outputHandler = gameConfig.outputHandler();
     }
 
     @Override

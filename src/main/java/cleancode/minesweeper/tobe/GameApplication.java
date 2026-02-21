@@ -8,7 +8,14 @@ import cleancode.minesweeper.tobe.io.ConsoleOutputHandler;
 public class GameApplication {
 
     static void main() {
-        final GameRunnable gameRunnable = new Mineswepper(new VeryBeginner(), new ConsoleInputHandler(), new ConsoleOutputHandler());
+
+        final GameConfig gameConfig = new GameConfig(
+            new VeryBeginner(),
+            new ConsoleInputHandler(),
+            new ConsoleOutputHandler()
+        );
+
+        final GameRunnable gameRunnable = new Mineswepper(gameConfig);
         gameRunnable.run();
     }
 }
