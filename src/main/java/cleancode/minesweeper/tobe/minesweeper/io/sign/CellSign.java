@@ -48,11 +48,6 @@ public enum CellSign implements CellSignProvider {
         this.cellSnapshotStatus = cellSnapshotStatus;
     }
 
-    @Override
-    public boolean support(CellSnapshot cellSnapshot) {
-        return cellSnapshot.status() == cellSnapshotStatus;
-    }
-
     public static String findCellSignFrom(CellSnapshot cellSnapshot) {
         final CellSignProvider cellSignProvider = findBy(cellSnapshot);
         return cellSignProvider.provide(cellSnapshot);
@@ -63,6 +58,11 @@ public enum CellSign implements CellSignProvider {
             .filter(cellSignProvider -> cellSignProvider.support(cellSnapshot))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 셀 상태입니다. cellSnapshot: " + cellSnapshot));
+    }
+
+    @Override
+    public boolean support(CellSnapshot cellSnapshot) {
+        return cellSnapshot.status() == cellSnapshotStatus;
     }
 
 

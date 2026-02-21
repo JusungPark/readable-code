@@ -1,13 +1,16 @@
 package cleancode.minesweeper.tobe;
 
 import cleancode.minesweeper.tobe.game.GameRunnable;
-import cleancode.minesweeper.tobe.minesweeper.Mineswepper;
+import cleancode.minesweeper.tobe.minesweeper.Minesweeper;
 import cleancode.minesweeper.tobe.minesweeper.config.GameConfig;
 import cleancode.minesweeper.tobe.minesweeper.gamelevel.VeryBeginner;
 import cleancode.minesweeper.tobe.minesweeper.io.ConsoleInputHandler;
 import cleancode.minesweeper.tobe.minesweeper.io.ConsoleOutputHandler;
 
 public class GameApplication {
+
+    private GameApplication() {
+    }
 
     static void main() {
 
@@ -18,7 +21,7 @@ public class GameApplication {
             new ConsoleOutputHandler()
         );
 
-        final GameRunnable gameRunnable = new Mineswepper(gameConfig);
+        final GameRunnable gameRunnable = new Minesweeper(gameConfig);
         gameRunnable.run();
     }
 }

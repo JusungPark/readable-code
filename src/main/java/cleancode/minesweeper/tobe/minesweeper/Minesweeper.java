@@ -9,13 +9,13 @@ import cleancode.minesweeper.tobe.minesweeper.io.InputHandler;
 import cleancode.minesweeper.tobe.minesweeper.io.OutputHandler;
 import cleancode.minesweeper.tobe.minesweeper.user.UserAction;
 
-public class Mineswepper implements GameRunnable {
+public class Minesweeper implements GameRunnable {
 
     private final GameBoard gameBoard;
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
 
-    public Mineswepper(GameConfig gameConfig) {
+    public Minesweeper(GameConfig gameConfig) {
         this.gameBoard = new GameBoard(gameConfig.gameLevel());
         this.inputHandler = gameConfig.inputHandler();
         this.outputHandler = gameConfig.outputHandler();

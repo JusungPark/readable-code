@@ -9,6 +9,10 @@ import java.util.stream.IntStream;
 
 public class ConsoleOutputHandler implements OutputHandler {
 
+    private static String generateColumnAlphabets(GameBoard gameBoard) {
+        return IntStream.range(0, gameBoard.colSize()).mapToObj(index -> (char) ('a' + index)).map(String::valueOf).collect(Collectors.joining(" "));
+    }
+
     @Override
     public void showGameStartComments() {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -65,9 +69,5 @@ public class ConsoleOutputHandler implements OutputHandler {
     @Override
     public void showCommentForWrongAction() {
         System.out.println("잘못된 번호를 선택하셨습니다.");
-    }
-
-    private static String generateColumnAlphabets(GameBoard gameBoard) {
-        return IntStream.range(0, gameBoard.colSize()).mapToObj(index -> (char) ('a' + index)).map(String::valueOf).collect(Collectors.joining(" "));
     }
 }
